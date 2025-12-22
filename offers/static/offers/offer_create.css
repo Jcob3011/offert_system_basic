@@ -1,0 +1,26 @@
+/* Styl dla inputów w tabeli - żeby wyglądały lżej */
+.table input.form-control {
+    border: 1px solid transparent; /* Brak ramki domyślnie */
+    background-color: transparent;
+    border-bottom: 1px solid #dee2e6; /* Tylko linia na dole */
+    border-radius: 0;
+    padding: 0.5rem;
+}
+
+.table input.form-control:focus {
+    background-color: #fff;
+    border-color: #86b7fe;
+    box-shadow: none;
+    border-bottom: 2px solid #0d6efd;
+}
+
+/* Wyrównanie checkboxa usuwania */
+.form-check-input {
+    cursor: pointer;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.card {
+    overflow: hidden; /* Zaokrąglenia */
+}

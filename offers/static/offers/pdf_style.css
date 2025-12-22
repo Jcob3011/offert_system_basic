@@ -1,0 +1,133 @@
+/* offers/static/css/pdf_style.css */
+
+@page {
+    size: A4;
+    margin: 1.5cm;
+    @bottom-center {
+        content: "Strona " counter(page) " z " counter(pages);
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 8pt;
+        color: #888;
+    }
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    color: #000;
+    line-height: 1.3;
+}
+
+/* --- NAGŁÓWEK --- */
+.main-title {
+    font-size: 18pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+/* Używamy tabeli do układu, bo w PDF jest stabilniejsza niż float/flex */
+.header-layout-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+
+.header-layout-table td {
+    vertical-align: top;
+    padding: 0;
+}
+
+.header-left {
+    width: 55%; /* Trochę więcej miejsca dla klienta */
+    padding-right: 20px;
+}
+
+.header-right {
+    width: 45%;
+    text-align: right;
+}
+
+/* Boxy informacyjne */
+.info-box {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 5px;
+    min-height: 80px;
+}
+
+.label {
+    font-weight: bold;
+    font-size: 9pt;
+    color: #333;
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* --- TABELA PRODUKTÓW --- */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.items-table th {
+    background-color: #eee;
+    border: 1px solid #000;
+    font-weight: bold;
+    font-size: 9pt;
+    padding: 6px;
+    text-align: center;
+}
+
+.items-table td {
+    border: 1px solid #000;
+    padding: 6px;
+    font-size: 9pt;
+    vertical-align: middle;
+}
+
+/* Kolumny */
+.col-lp { width: 5%; text-align: center; }
+.col-name { width: 45%; text-align: left; }
+.col-qty { width: 10%; text-align: center; }
+.col-price { width: 20%; text-align: right; white-space: nowrap; }
+.col-val { width: 20%; text-align: right; white-space: nowrap; font-weight: bold; background-color: #fcfcfc; }
+
+/* --- PODSUMOWANIE --- */
+.total-section {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.total-value {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+/* --- STOPKA / WARUNKI --- */
+.terms-section {
+    margin-top: 50px;
+    border-top: 2px solid #000;
+    padding-top: 15px;
+    font-size: 9pt;
+}
+
+.terms-section ul {
+    margin: 5px 0 0 20px;
+    padding: 0;
+}
+
+.signature-box {
+    margin-top: 40px;
+    float: right;
+    width: 200px;
+    text-align: center;
+    border-top: 1px solid #000;
+    padding-top: 5px;
+    font-weight: bold;
+    font-size: 9pt;
+}

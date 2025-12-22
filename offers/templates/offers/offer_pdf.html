@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Oferta {{ offer.offer_number }}</title>
+    <link href="{% static 'offers/pdf_style.css' %}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="main-title">OFERTA HANDLOWA NR: {{ offer.offer_number }}</div>
+
+    <table class="header-layout-table">
+      <tr>
+        <td class="header-left">
+          <span class="label">Nabywca / Klient:</span>
+          <div class="info-box">
+            <strong style="font-size: 11pt">{{ offer.client_name }}</strong
+            ><br />
+            {% if offer.client_email %}Email: {{ offer.client_email }}{%endif %}
+          </div>
+        </td>
+
+        <td class="header-right">
+          <div style="margin-bottom: 15px">
+            <strong>Data wystawienia:</strong> {{ created_date }}<br />
+            <strong>Data ważności:</strong> {{ valid_until }}
+          </div>
+
+          <span class="label">Wystawca:</span>
+          <div style="line-height: 1.4">
+            <strong>Twoja Firma IT Sp. z o.o.</strong><br />
+            ul. Technologiczna 1<br />
+            00-001 Warszawa<br />
+            NIP: 123-456-78-90
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    {% if offer.description %}
+    <div style="margin-bottom: 25px">
+      <span class="label">Temat / Opis:</span>
+      {{ offer.description|striptags }}
+    </div>
+    {% endif %}
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th class="col-lp">Lp.</th>
+          <th class="col-name">Nazwa towaru / usługi</th>
+          <th class="col-qty">Ilość</th>
+          <th class="col-price">Cena jedn. netto</th>
+          <th class="col-val">Wartość netto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in offer.items.all %}
+        <tr>
+          <td class="col-lp">{{ forloop.counter }}</td>
+          <td class="col-name">
+            <strong>{{ item.description }}</strong>
+          </td>
+          <td class="col-qty">{{ item.quantity }}</td>
+          <td class="col-price">{{ item.price_per_unit }} PLN</td>
+          <td class="col-val">{{ item.total_price }} PLN</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="total-section">
+      Suma Netto: <span class="total-value">{{ offer.total_price }} PLN</span
+      ><br />
+      <span style="color: #666; font-size: 9pt"
+        >+ Podatek VAT (23%): (do doliczenia)</span
+      >
+    </div>
+
+    <div class="terms-section">
+      <strong>Uwagi i warunki:</strong>
+      <ul>
+        <li>Ceny netto nie zawierają podatku VAT. Należy doliczyć 23%.</li>
+        <li>Oferta jest ważna przez 7 dni od daty wystawienia.</li>
+        <li>Termin realizacji: 14 dni roboczych.</li>
+        <li>Warunki płatności: Przelew 14 dni.</li>
+      </ul>
+
+      <div class="signature-box">
+        Handlowiec<br />
+        <span style="font-weight: normal; font-size: 8pt"
+          >(Podpis osoby upoważnionej)</span
+        >
+      </div>
+    </div>
+  </body>
+</html>

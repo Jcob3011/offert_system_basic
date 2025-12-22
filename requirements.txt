@@ -1,0 +1,10 @@
+Django>=5.0
+
+psycopg2-binary>=2.9
+
+WeasyPrint>=60.0
+
+django-jazzmin
+django-ckeditor
+django-import-export
+whitenoise

@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lista Ofert</title>
+    <link rel="stylesheet" href="{% static 'offers/common.css' %}" />
+    <link rel="stylesheet" href="{% static 'offers/offer_list.css' %}" />
+  </head>
+  <body>
+    <div class="wide-container">
+      <div class="header-row">
+        <h1>Twoje Oferty</h1>
+        <a href="{% url 'offer_create' %}" class="btn-new">+ Nowa Oferta</a>
+      </div>
+
+      <table class="offer-table">
+        <thead>
+          <tr>
+            <th>NUMER</th>
+            <th>KLIENT</th>
+            <th>DATA</th>
+            <th>KWOTA</th>
+            <th>STATUS</th>
+            <th>AKCJE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for offer in offers %}
+          <tr>
+            <td>
+              <a href="{% url 'offer_detail' offer.pk %}" class="offer-link">
+                {{ offer.offer_number }}
+              </a>
+            </td>
+            <td>{{ offer.client_name }}</td>
+            <td>{{ offer.created_at|date:"d.m.Y" }}</td>
+            <td>
+              <strong>{{ offer.total_price }} PLN</strong>
+            </td>
+            <td>
+              <span class="badge {{ offer.css_class }}">
+                {{ offer.get_status_display }}
+              </span>
+            </td>
+            <td>
+              <a
+                href="{% url 'offer_pdf' offer.pk %}"
+                class="btn-sm btn-pdf"
+                target="_blank"
+                >PDF</a
+              >
+              <a
+                href="{% url 'offer_detail' offer.pk %}"
+                class="btn-sm btn-details"
+                >Podgląd</a
+              >
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 20px">
+              Brak ofert. <a href="{% url 'offer_create' %}">Dodaj pierwszą!</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

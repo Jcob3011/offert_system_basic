@@ -1,0 +1,58 @@
+/* --- FORMATOWANIE OPISU (Rich Text) --- */
+.description-box {
+    background-color: #f8f9fa; /* Jasne tło */
+    border-left: 4px solid #0d6efd; /* Niebieski pasek z lewej */
+    color: #212529;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Żeby obrazki w opisie nie wychodziły poza ramkę */
+.description-box img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+/* --- BADGE STATUSÓW --- */
+/* To są kolory zgodne z Twoim dashboardem */
+
+/* Robocza / Draft */
+.status-badge.status-draft,
+.status-badge.robocza {
+    background-color: #6c757d; 
+    color: white;
+}
+
+/* Oczekuje / Pending */
+.status-badge.status-pending,
+.status-badge.oczekuje-na-akceptacje {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* Zaakceptowana / Approved */
+.status-badge.status-approved,
+.status-badge.zaakceptowana {
+    background-color: #198754;
+    color: white;
+}
+
+/* Odrzucona / Rejected */
+.status-badge.status-rejected,
+.status-badge.odrzucona {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* --- DROBNE DETALE --- */
+.card {
+    overflow: hidden; /* Żeby nagłówki kart miały zaokrąglenia */
+}
+
+/* Pogrubienie nagłówków w tabeli */
+.table thead th {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}

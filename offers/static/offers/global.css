@@ -1,0 +1,27 @@
+/* offers/static/offers/common.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px; /* Domyślna szerokość */
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Nagłówki */
+.header h2 {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* Linki powrotne/akcji */
+a {
+    text-decoration: none;
+}
