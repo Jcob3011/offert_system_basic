@@ -2,11 +2,10 @@ from django import forms
 from django.forms import inlineformset_factory
 from .models import Offer, OfferItem
 
-# 1. Formularz Główny (Nagłówek pakietu)
+# 1. Formularz Główny 
 class OfferForm(forms.ModelForm):
     class Meta:
         model = Offer
-        # Wymieniamy pola, które użytkownik wypełnia ręcznie.
         # offer_number i total_price wyliczymy sami w backendzie.
         fields = ['client_name', 'client_email', 'description', 'status', 'external_file']
         
@@ -29,9 +28,6 @@ class OfferForm(forms.ModelForm):
 class OfferItemForm(forms.ModelForm):
     class Meta:
         model = OfferItem
-        # Tu była przyczyna błędu!
-        # Zmieniamy 'name' -> 'description'
-        # Zmieniamy 'unit_price' -> 'price_per_unit'
         fields = ['description', 'quantity', 'price_per_unit']
         
         widgets = {
@@ -51,7 +47,6 @@ class OfferItemForm(forms.ModelForm):
             }),
         }
 # 3. FormSet - Fabryka łączenia
-# Mówimy Django: "OfferItem jest podpięty do Offer".
 OfferItemFormSet = inlineformset_factory(
     Offer, OfferItem, form=OfferItemForm,
     extra=1,       # Jeden pusty wiersz na start

@@ -1,4 +1,4 @@
-/* 1. NOWY KONTENER (Dziedziczy wygląd common.css, ale zmienia szerokość) */
+
 .wide-container {
     max-width: 1400px; /* Szeroki ekran */
     margin: 0 auto;
@@ -91,5 +91,18 @@
     margin-right: 5px;
     text-align: center;
 }
-.btn-pdf { background-color: #17a2b8; }
+.btn-pdf { background-color: #0b7181; }
 .btn-details { background-color: #6c757d; }
+
+/* Poprawa wyglądu wierszy i przycisków */
+.table-actions .btn {
+    min-width: 32px; /* Zapewnia, że przyciski ✔ i ✘ są kwadratowe */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02); /* Delikatne podświetlenie wiersza */
+}

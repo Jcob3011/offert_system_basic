@@ -125,24 +125,23 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const addBtn = document.getElementById("add-item-btn");
-        // Django zapisuje liczbę formularzy w ukrytym polu o takim ID:
         const totalFormsInput = document.getElementById("id_items-TOTAL_FORMS");
         const container = document.getElementById("items-container");
 
         addBtn.addEventListener("click", function (e) {
           e.preventDefault();
 
-          // 1. Sprawdźmy czy znaleźliśmy licznik (Debug)
+       
           if (!totalFormsInput) {
             console.error(
               "Błąd: Nie znaleziono pola TOTAL_FORMS. Sprawdź czy w forms.py related_name matchuje prefix."
             );
-            // Fallback: Spróbujmy znaleźć pole, jeśli prefix jest inny (domyślny)
+         
             var fallbackInput = document.getElementById(
               "id_offeritem_set-TOTAL_FORMS"
             );
             if (fallbackInput) {
-              // Jeśli znaleźliśmy pod starą nazwą, używajmy jej
+            
               console.log("Znaleziono stary prefix offeritem_set");
               fallbackLogic(fallbackInput, container);
               return;
@@ -155,8 +154,7 @@
           const templateRow = container.querySelectorAll(".item-row")[0];
           const newRow = templateRow.cloneNode(true);
 
-          // Regex do zamiany indeksów (np. items-0-name -> items-1-name)
-          // Szukamy "-liczba-"
+          // Regex do zamiany indeksów 
           const regex = /-\d+-/g;
           const replacement = `-${formCount}-`;
 
@@ -173,7 +171,7 @@
           totalFormsInput.value = formCount + 1;
         });
 
-        // Funkcja awaryjna (gdyby related_name namieszało w nazwach inputów)
+        // Funkcja awaryjna 
         function fallbackLogic(totalInput, container) {
           let formCount = parseInt(totalInput.value);
           const row = container.querySelectorAll(".item-row")[0];

@@ -5,9 +5,11 @@ from .models import Offer, OfferItem
 from import_export.admin import ImportExportModelAdmin
 
 # Branding
-admin.site.site_header = "System Ofertowy v1"
+admin.site.site_header = "System Ofertowy"
 admin.site.site_title = "Panel Zarządzania"
-admin.site.index_title = "NOC (Network Operations Center)"
+admin.site.index_title = "Ofertowanie"
+
+
 
 class OfferItemInline(admin.TabularInline):
     model = OfferItem
@@ -49,9 +51,8 @@ class OfferAdmin(ImportExportModelAdmin):
     
     # --- NOWE FUNKCJE UI ---
 
-    # 1. Kolorowy status (Dioda LED)
+    # 1. Kolorowy status 
     def status_colored(self, obj):
-        # Definiujemy mapę kolorów (jak VLAN ID -> Color)
         colors = {
             Offer.Status.DRAFT: 'gray',
             Offer.Status.PENDING: 'orange',
@@ -59,7 +60,6 @@ class OfferAdmin(ImportExportModelAdmin):
             Offer.Status.REJECTED: 'red',
         }
         color = colors.get(obj.status, 'black')
-        # Zwracamy kod HTML. format_html jest bezpieczne (chroni przed XSS)
         return format_html(
             '<b style="color: {};">{}</b>', 
             color, 
@@ -69,8 +69,6 @@ class OfferAdmin(ImportExportModelAdmin):
 
     # 2. Przycisk PDF (Direct Link)
     def pdf_button(self, obj):
-        # Generujemy URL do widoku 'offer_pdf' używając reverse (jak 'show ip route' szuka ścieżki)
-        # Upewnij się, że w urls.py masz name='offer_pdf'
         url = reverse('offer_pdf', args=[obj.pk])
         return format_html(
             '<a class="button" href="{}" target="_blank">Pobierz PDF</a>', 
@@ -81,7 +79,7 @@ class OfferAdmin(ImportExportModelAdmin):
     # --- KONIEC UI ---
 
     def get_readonly_fields(self, request, obj=None):
-        # Domyślnie total_price i offer_number zawsze zablokowane (bo to automat)
+        # Domyślnie total_price i offer_number zawsze zablokowane
         default_readonly = ['total_price', 'offer_number']
         
         if not obj:

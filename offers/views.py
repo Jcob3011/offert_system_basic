@@ -8,6 +8,7 @@ import weasyprint
 from django.http import HttpResponse, FileResponse
 from django.template.loader import render_to_string
 from datetime import timedelta
+from django.contrib import messages
 
 # --- WIDOK: KAFELKI (DASHBOARD) ---
 @login_required
@@ -81,6 +82,13 @@ def offer_create(request):
 def offer_edit(request, pk):
     offer = get_object_or_404(Offer, pk=pk)
     
+    # --- SECURITY CHECK ---
+    # Jeśli oferta nie jest w trybie DRAFT i nie jest ODRZUCONA, blokujemy edycję
+    if offer.status not in [Offer.Status.DRAFT, Offer.Status.REJECTED]:
+        messages.error(request, "Nie można edytować oferty, która jest w trakcie akceptacji lub zatwierdzona.")
+        return redirect('offer_list')
+    # ----------------------
+    
     if request.method == 'POST':
         form = OfferForm(request.POST, request.FILES, instance=offer)
         formset = OfferItemFormSet(request.POST, instance=offer)
@@ -113,9 +121,7 @@ def offer_edit(request, pk):
         'offer': offer
     })
 
-# --- WIDOK: PDF (jeśli go masz) ---
-from datetime import timedelta # <--- Pamiętaj o imporcie na górze pliku!
-
+# --- WIDOK: PDF  ---
 @login_required
 def offer_pdf(request, pk):
     offer = get_object_or_404(Offer, pk=pk)
@@ -127,7 +133,6 @@ def offer_pdf(request, pk):
             pass 
 
     # --- NOWOŚĆ: Przygotowanie dat w Pythonie ---
-    # Dzięki temu w HTML wpiszemy tylko prostą zmienną
     ctx_created_date = offer.created_at.strftime('%Y-%m-%d')
     
     # Obliczamy termin ważności (np. +14 dni)
@@ -151,3 +156,53 @@ def offer_pdf(request, pk):
     response['Content-Disposition'] = f'inline; filename="Oferta_{safe_filename}.pdf"'
     
     return response
+
+@login_required
+def offer_change_status(request, pk, action):
+    # 1. Pobieramy konkretną ofertę (pakiet)
+    offer = get_object_or_404(Offer, pk=pk)
+    user = request.user
+
+    # 2. Logika przejść (State Machine)
+    
+    # SCENARIUSZ A: Wysłanie do akceptacji (Draft -> Pending)
+    if action == 'submit':
+        if offer.status == Offer.Status.DRAFT:
+            offer.status = Offer.Status.PENDING
+            offer.save()
+            messages.success(request, f"Oferta {offer.offer_number} wysłana do akceptacji.")
+        else:
+            messages.warning(request, "Tylko szkic można wysłać do akceptacji.")
+
+    # SCENARIUSZ B: Zatwierdzenie (Pending -> Approved)
+    elif action == 'approve':
+        if user.is_superuser:
+            if offer.status == Offer.Status.PENDING:
+                offer.status = Offer.Status.APPROVED
+                offer.save()
+                messages.success(request, "Oferta zatwierdzona! Można generować PDF.")
+            else:
+                messages.warning(request, "Zatwierdzić można tylko oczekującą ofertę.")
+        else:
+            messages.error(request, "Brak uprawnień (wymagany CEO).")
+
+    # SCENARIUSZ C: Odrzucenie (Pending -> Rejected)
+    
+    elif action == 'reject':
+        if user.is_superuser:
+            if offer.status == Offer.Status.PENDING:
+                offer.status = Offer.Status.REJECTED
+                offer.save()
+                messages.error(request, "Oferta odrzucona. Wraca do poprawki.")
+        else:
+            messages.error(request, "Brak uprawnień.")
+
+    # SCENARIUSZ D: Cofnięcie do Draftu (np. żeby poprawić odrzuconą)
+    elif action == 'draft':
+        if offer.status == Offer.Status.REJECTED:
+            offer.status = Offer.Status.DRAFT
+            offer.save()
+            messages.info(request, "Oferta przywrócona do edycji.")
+
+    
+    return redirect('home')

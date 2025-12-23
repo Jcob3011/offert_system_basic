@@ -1,4 +1,4 @@
-/* Styl dla inputów w tabeli - żeby wyglądały lżej */
+/* Styl dla inputów w tabeli */
 .table input.form-control {
     border: 1px solid transparent; /* Brak ramki domyślnie */
     background-color: transparent;
