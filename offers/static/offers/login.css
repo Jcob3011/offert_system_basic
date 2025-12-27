@@ -3,21 +3,21 @@
 /* 1. Tło i centrowanie całego ekranu */
 body {
     background-color: #f0f2f5; /* Jasnoszare tło, żeby biała karta się odcinała */
-    height: 100vh;             /* 100% wysokości widoku (viewport height) */
-    display: flex;             /* Włączamy Flexbox (nowoczesny routing układu) */
-    align-items: center;       /* Centrowanie w pionie */
-    justify-content: center;   /* Centrowanie w poziomie */
+    height: 100vh; /* 100% wysokości widoku (viewport height) */
+    display: flex; /* Włączamy Flexbox (nowoczesny routing układu) */
+    align-items: center; /* Centrowanie w pionie */
+    justify-content: center; /* Centrowanie w poziomie */
     margin: 0;
 }
 
 /* 2. Wygląd samej karty logowania */
 .login-card {
     background-color: white;
-    padding: 2.5rem;           /* Odstęp wewnątrz karty */
-    border-radius: 10px;       /* Zaokrąglone rogi */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Cień pod spodem (poczucie głębi) */
+    padding: 2.5rem; /* Odstęp wewnątrz karty */
+    border-radius: 10px; /* Zaokrąglone rogi */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Cień pod spodem (poczucie głębi) */
     width: 100%;
-    max-width: 400px;          /* KLUCZOWE: Ograniczamy szerokość, żeby nie była na cały ekran */
+    max-width: 400px; /* KLUCZOWE: Ograniczamy szerokość, żeby nie była na cały ekran */
 }
 
 /* 3. Poprawki dla nagłówka */

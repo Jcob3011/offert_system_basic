@@ -1,97 +1,159 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8"/>
     <title>Oferta {{ offer.offer_number }}</title>
-    <link href="{% static 'offers/pdf_style.css' %}" rel="stylesheet" />
-  </head>
-  <body>
-    <div class="main-title">OFERTA HANDLOWA NR: {{ offer.offer_number }}</div>
-
-    <table class="header-layout-table">
-      <tr>
-        <td class="header-left">
-          <span class="label">Nabywca / Klient:</span>
-          <div class="info-box">
-            <strong style="font-size: 11pt">{{ offer.client_name }}</strong
-            ><br />
-            {% if offer.client_email %}Email: {{ offer.client_email }}{%endif %}
-          </div>
+    <link href="{% static 'offers/pdf_style.css' %}" rel="stylesheet"/>
+</head>
+<body>
+<table style="width: 100%; border: none; margin-bottom: 30px;">
+    <tr>
+        <td style="width: 50%; vertical-align: top;">
+            {% if offer.seller.logo %}
+                <img src="{{ offer.seller.logo.url }}" style="max-height: 80px;">
+            {% else %}
+                <h2 style="margin: 0;">{{ offer.seller.name }}</h2>
+            {% endif %}
         </td>
 
-        <td class="header-right">
-          <div style="margin-bottom: 15px">
-            <strong>Data wystawienia:</strong> {{ created_date }}<br />
-            <strong>Data ważności:</strong> {{ valid_until }}
-          </div>
+        <td style="width: 50%; text-align: right; vertical-align: top;">
+            <h1 style="color: #333; margin: 0;">OFERTA HANDLOWA</h1>
+            <h3 style="color: #666; margin: 5px 0 15px 0;">Nr: {{ offer.offer_number }}</h3>
 
-          <span class="label">Wystawca:</span>
-          <div style="line-height: 1.4">
-            <strong>Twoja Firma IT Sp. z o.o.</strong><br />
-            ul. Technologiczna 1<br />
-            00-001 Warszawa<br />
-            NIP: 123-456-78-90
-          </div>
+            <p style="font-size: 12px; line-height: 1.5;">
+                Data wystawienia: <strong>{{ offer.created_at|date:"d.m.Y" }}</strong><br>
+                Ważna do: <strong>{{ offer.valid_until_date|date:"d.m.Y" }}</strong>
+            </p>
         </td>
-      </tr>
-    </table>
+    </tr>
+</table>
 
-    {% if offer.description %}
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+    <tr>
+        <td style="width: 48%; vertical-align: top; padding: 10px; border: 1px solid #ddd;">
+            <h4 style="margin-top: 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">SPRZEDAWCA
+                (Wystawca):</h4>
+
+            <p style="font-size: 13px; line-height: 1.4;">
+                <strong>{{ offer.seller.name }}</strong><br>
+                {{ offer.seller.address|linebreaksbr }}
+            </p>
+
+            <p style="font-size: 12px; color: #444; margin-top: 10px;">
+                NIP: {{ offer.seller.nip }}<br>
+                {% if offer.seller.email %}Email: {{ offer.seller.email }}<br>{% endif %}
+                {% if offer.seller.phone %}Tel: {{ offer.seller.phone }}<br>{% endif %}
+            </p>
+
+            {% if offer.seller.bank_account %}
+                <p style="font-size: 12px; margin-top: 10px;">
+                    <strong>Konto bankowe:</strong><br>
+                    {{ offer.seller.bank_account }}
+                </p>
+            {% endif %}
+        </td>
+
+        <td style="width: 4%; border: none;"></td>
+
+        <td style="width: 48%; vertical-align: top; padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;">
+            <h4 style="margin-top: 0; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px;">NABYWCA:</h4>
+
+            {% if offer.client.company %}
+                <p style="font-size: 13px; line-height: 1.4;">
+                    <strong>{{ offer.client.company.name }}</strong><br>
+                    {{ offer.client.company.address|linebreaksbr }}<br>
+                    NIP: {{ offer.client.company.nip }}
+                </p>
+            {% endif %}
+
+            <p style="font-size: 12px; margin-top: 15px;">
+                <strong>Osoba kontaktowa:</strong><br>
+                {{ offer.client.first_name }} {{ offer.client.last_name }}<br>
+                {{ offer.client.email }}
+            </p>
+        </td>
+    </tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+
+{% if offer.description %}
     <div style="margin-bottom: 25px">
-      <span class="label">Temat / Opis:</span>
-      {{ offer.description|striptags }}
+        <span class="label">Temat / Opis:</span>
+        {{ offer.description|striptags }}
     </div>
-    {% endif %}
+{% endif %}
 
-    <table class="items-table">
-      <thead>
+<table class="items-table">
+    <thead>
+    <tr>
+        <th class="col-lp">Lp.</th>
+        <th class="col-name">Nazwa towaru / usługi</th>
+        <th class="col-qty">Ilość</th>
+        <th class="col-price">Cena jedn. netto</th>
+        <th class="col-val">Wartość netto</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in offer.items.all %}
         <tr>
-          <th class="col-lp">Lp.</th>
-          <th class="col-name">Nazwa towaru / usługi</th>
-          <th class="col-qty">Ilość</th>
-          <th class="col-price">Cena jedn. netto</th>
-          <th class="col-val">Wartość netto</th>
+            <td class="col-lp">{{ forloop.counter }}</td>
+            <td class="col-name">
+                <strong>{{ item.description }}</strong>
+            </td>
+            <td class="col-qty">{{ item.quantity }}</td>
+            <td class="col-price">{{ item.price_per_unit }} PLN</td>
+            <td class="col-val">{{ item.total_price }} PLN</td>
         </tr>
-      </thead>
-      <tbody>
-        {% for item in offer.items.all %}
-        <tr>
-          <td class="col-lp">{{ forloop.counter }}</td>
-          <td class="col-name">
-            <strong>{{ item.description }}</strong>
-          </td>
-          <td class="col-qty">{{ item.quantity }}</td>
-          <td class="col-price">{{ item.price_per_unit }} PLN</td>
-          <td class="col-val">{{ item.total_price }} PLN</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% endfor %}
+    </tbody>
+</table>
 
-    <div class="total-section">
-      Suma Netto: <span class="total-value">{{ offer.total_price }} PLN</span
-      ><br />
-      <span style="color: #666; font-size: 9pt"
-        >+ Podatek VAT (23%): (do doliczenia)</span
-      >
-    </div>
+<div class="total-section">
+    Suma Netto: <span class="total-value">{{ offer.total_price }} PLN</span
+><br/>
+    <span style="color: #666; font-size: 9pt"
+    >+ Podatek VAT (23%): (do doliczenia)</span
+    >
+</div>
 
-    <div class="terms-section">
-      <strong>Uwagi i warunki:</strong>
-      <ul>
+<div class="terms-section">
+    <strong>Uwagi i warunki:</strong>
+    <ul>
         <li>Ceny netto nie zawierają podatku VAT. Należy doliczyć 23%.</li>
-        <li>Oferta jest ważna przez 7 dni od daty wystawienia.</li>
-        <li>Termin realizacji: 14 dni roboczych.</li>
-        <li>Warunki płatności: Przelew 14 dni.</li>
-      </ul>
+        <div class="offer-terms">
+            <h4>Warunki oferty:</h4>
+            <ul>
+                <li><strong>Data wystawienia:</strong> {{ offer.created_at|date:"d.m.Y" }}</li>
 
-      <div class="signature-box">
-        Handlowiec<br />
-        <span style="font-weight: normal; font-size: 8pt"
-          >(Podpis osoby upoważnionej)</span
-        >
-      </div>
+                <li><strong>Ważna do:</strong> {{ offer.valid_until_date|date:"d.m.Y" }} ({{ offer.validity_days }} dni)
+                </li>
+
+                <li><strong>Płatność:</strong> {{ offer.get_payment_method_display }}</li>
+                <li><strong>Termin płatności:</strong> {{ offer.payment_deadline_days }} dni</li>
+
+                {% if offer.currency_rate > 1 %}
+                    <li><em>Kurs przeliczenia EUR: {{ offer.currency_rate }} PLN</em></li>
+                {% endif %}
+            </ul>
+        </div>
+    </ul>
+
+    <div class="signature-section" style="margin-top: 50px; text-align: right; margin-right: 20px;">
+        <p>Ofertę przygotował:</p>
+
+        {% if offer.created_by %}
+            <h3>{{ offer.created_by.first_name }} {{ offer.created_by.last_name }}</h3>
+            <p>Email: {{ offer.created_by.email }}</p>
+        {% else %}
+
+        {% endif %}
+
+        <p><em>Dokument wygenerowany elektronicznie</em></p>
     </div>
-  </body>
+</div>
+</body>
 </html>

@@ -3,7 +3,7 @@ from django.urls import path, include  # <--- WAŻNE: Dodaj 'include'
 from django.conf import settings
 from django.conf.urls.static import static
 from offers import views as offer_views
-from offers import views 
+from offers import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
