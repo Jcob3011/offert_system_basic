@@ -2,8 +2,7 @@
 
 Kompleksowa aplikacja webowa do zarządzania procesem tworzenia, akceptacji i generowania ofert handlowych. System usprawnia komunikację na linii **Handlowiec ↔ CEO ↔ Dział Techniczny**.
 
-![Dashboard Preview](https://via.placeholder.com/1000x400?text=Tu+Wstaw+Screen+Z+Listy+Ofert)
-*(Tutaj warto wstawić zrzut ekranu głównej listy ofert)*
+
 
 ## 📋 O Projekcie
 
@@ -38,15 +37,7 @@ Projekt zbudowany w oparciu o nowoczesny stos technologiczny:
     * ❌ **Odrzuca:** Musi wpisać powód odrzucenia. Status zmienia się na *Odrzucona* (czerwony alert).
 4.  **Poprawa:** Handlowiec widzi powód odrzucenia, edytuje ofertę (status wraca do *Robocza*) i proces startuje od nowa.
 
-## 📸 Zrzuty Ekranu
 
-| Lista Ofert | Szczegóły i Statusy |
-|:---:|:---:|
-| ![Lista](https://via.placeholder.com/400x300?text=Screen+1) | ![Szczegóły](https://via.placeholder.com/400x300?text=Screen+2) |
-
-| Generowanie PDF | Panel Odrzucania |
-|:---:|:---:|
-| ![PDF](https://via.placeholder.com/400x300?text=Screen+3) | ![Reject](https://via.placeholder.com/400x300?text=Screen+4) |
 
 ## ⚙️ Instalacja i Uruchomienie
 
@@ -95,4 +86,4 @@ Aby uruchomić projekt lokalnie:
 * [ ] Dashboard ze statystykami sprzedaży.
 
 ---
-Autor: **Twoje Imię**
+Autor: **Jcobn3011**
