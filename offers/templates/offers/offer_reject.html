@@ -1,0 +1,47 @@
+{% load static %} <!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Odrzuć Ofertę</title>
+    <link rel="stylesheet" href="{% static 'offers/offer_reject.css' %}">
+</head>
+<body>
+
+<div class="reject-card">
+    <div class="reject-header">
+        <h2>Odrzucanie Oferty: {{ offer.offer_number }}</h2>
+    </div>
+
+    <div class="reject-body">
+
+        <div class="warning-box">
+            <strong>Uwaga:</strong> Ta operacja zmieni status na "ODRZUCONA" i zablokuje możliwość dalszej edycji przez
+            handlowca. Wymagane jest podanie powodu.
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="reason" class="form-label">Dlaczego odrzucasz tę ofertę?</label>
+
+            <textarea
+                    name="rejection_reason"
+                    id="reason"
+                    class="reason-textarea"
+                    placeholder="Np. Zbyt niska marża, klient nie przeszedł weryfikacji KRD, błędy w doborze sprzętu..."
+                    required></textarea>
+            <div class="reject-actions">
+                <a href="{% url 'offer_detail' offer.pk %}" class="btn-cancel">
+                    ← Anuluj i wróć
+                </a>
+
+                <button type="submit" class="btn-confirm">
+                    Potwierdź Odrzucenie 👎
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

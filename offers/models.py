@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 
 # --- NOWE MODELE (CRM) ---
@@ -64,7 +65,7 @@ class Offer(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'draft', _('Robocza')
         PENDING = 'pending', _('Oczekuje na akceptację')
-        IN_CONSULTATION = 'consultation', _('Konsultacja z Seniorem')  # NOWOŚĆ (5)
+        IN_CONSULTATION = 'consultation', _('Konsultacja')
         APPROVED = 'approved', _('Zatwierdzona')
         SENT = 'sent', _('Wysłana')
         REJECTED = 'rejected', _('Odrzucona')
@@ -130,6 +131,15 @@ class Offer(models.Model):
         ordering = ['-created_at']
         verbose_name = "Oferta"
         verbose_name_plural = "Baza Ofert"
+
+    #  Funkcja jest gotowa, do konsultacji jak to ma wyglądać w szczegółach oferty dla nas i na generowanym PDF # !WAŻNE
+    def get_total_vat(self):
+        """Oblicza kwotę samego podatku VAT (23%)"""
+        return self.total_price * Decimal('0.23')
+
+    def get_total_gross(self):
+        """Oblicza kwotę Brutto (Netto + VAT)"""
+        return self.total_price * Decimal('1.23')
 
 
 # --- POZYCJE OFERTY (Tu też mała zmiana pod waluty) ---

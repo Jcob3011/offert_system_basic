@@ -8,7 +8,6 @@
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
     />
-    <link rel="stylesheet" href="{% static 'offers/common.css' %}"/>
     <link rel="stylesheet" href="{% static 'offers/offer_list.css' %}"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
@@ -20,6 +19,20 @@
         }
     </style>
 </head>
+{% if messages %}
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+                     role="alert">
+                    <strong>Komunikat:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endif %}
+
 <body class="bg-light">
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -70,12 +83,24 @@
                         <td>
                             {% if offer.status == 'draft' %}
                                 <span class="badge bg-secondary">Robocza</span>
+
                             {% elif offer.status == 'pending' %}
-                                <span class="badge bg-warning text-dark">Oczekuje</span>
+                                <span class="badge bg-warning text-dark">Oczekuje na akceptację</span>
+
+                            {% elif offer.status == 'consultation' %}
+                                <span class="badge bg-primary">Konsultacja</span>
+
                             {% elif offer.status == 'approved' %}
                                 <span class="badge bg-success">Zatwierdzona</span>
+
                             {% elif offer.status == 'rejected' %}
                                 <span class="badge bg-danger">Odrzucona</span>
+
+                            {% elif offer.status == 'sent' %}
+                                <span class="badge bg-info text-dark">Wysłana do klienta</span>
+
+                            {% else %}
+                                <span class="badge bg-light text-dark">{{ offer.get_status_display }}</span>
                             {% endif %}
                         </td>
                         <td class="table-actions">

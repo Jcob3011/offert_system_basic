@@ -90,9 +90,10 @@ def offer_edit(request, pk):
 
     # --- SECURITY CHECK ---
     # Jeśli oferta nie jest w trybie DRAFT i nie jest ODRZUCONA, blokujemy edycję
-    if offer.status not in [Offer.Status.DRAFT, Offer.Status.REJECTED]:
-        messages.error(request, "Nie można edytować oferty, która jest w trakcie akceptacji lub zatwierdzona.")
-        return redirect('offer_list')
+    # --- POPRAWKA: Pozwalamy edytować też w trakcie konsultacji ---
+    if offer.status not in [Offer.Status.DRAFT, Offer.Status.IN_CONSULTATION, Offer.Status.REJECTED]:
+        messages.error(request, "Nie można edytować oferty, która została już wysłana lub zatwierdzona.")
+        return redirect('offer_detail', pk=pk)
     # ----------------------
 
     if request.method == 'POST':
@@ -155,6 +156,24 @@ def offer_pdf(request, pk):
 
 
 @login_required
+def offer_reject(request, pk):
+    offer = get_object_or_404(Offer, pk=pk)
+
+    if request.method == 'POST':
+        reason = request.POST.get('rejection_reason')
+        if reason:
+            offer.status = Offer.Status.REJECTED
+            offer.rejection_reason = reason
+            offer.save()
+            messages.warning(request, f"Oferta odrzucona. Powód: {reason}")
+            return redirect('offers:offer_list')
+        else:
+            messages.error(request, "Musisz podać powód odrzucenia!")
+
+    return render(request, 'offers/offer_reject.html', {'offer': offer})
+
+
+@login_required
 def offer_change_status(request, pk, action):
     # 1. Pobieramy konkretną ofertę (pakiet)
     offer = get_object_or_404(Offer, pk=pk)
@@ -186,13 +205,19 @@ def offer_change_status(request, pk, action):
     # SCENARIUSZ C: Odrzucenie (Pending -> Rejected)
 
     elif action == 'reject':
-        if user.is_superuser:
-            if offer.status == Offer.Status.PENDING:
+        if request.method == 'POST':
+            reason = request.POST.get('rejection_reason')
+            if reason:
                 offer.status = Offer.Status.REJECTED
+                offer.rejection_reason = reason
                 offer.save()
-                messages.error(request, "Oferta odrzucona. Wraca do poprawki.")
-        else:
-            messages.error(request, "Brak uprawnień.")
+                messages.warning(request, f"Oferta odrzucona. Powód: {reason}")
+                return redirect('offer_list')
+            else:
+                messages.error(request, "Musisz podać powód odrzucenia!")
+
+        return render(request, 'offers/offer_reject.html', {'offer': offer})
+
 
     # SCENARIUSZ D: Cofnięcie do Draftu (np. żeby poprawić odrzuconą)
     elif action == 'draft':
@@ -201,4 +226,4 @@ def offer_change_status(request, pk, action):
             offer.save()
             messages.info(request, "Oferta przywrócona do edycji.")
 
-    return redirect('home')
+    return redirect('offer_list')

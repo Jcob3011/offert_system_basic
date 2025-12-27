@@ -1,70 +1,68 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Logowanie</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
     />
 
     <style>
-      /* Mały dodatek CSS tylko dla tła, resztę robi Bootstrap */
-      body {
-        background-color: #f0f2f5;
-      }
+        /* Mały dodatek CSS tylko dla tła, resztę robi Bootstrap */
+        body {
+            background-color: #f0f2f5;
+        }
     </style>
-  </head>
-  <body>
-    <div class="container vh-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
+</head>
+<body>
+<div class="container vh-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12 col-md-8 col-lg-5 col-xl-4">
-          <div class="card shadow-lg" style="border-radius: 1rem">
-            <div class="card-body p-5 text-center">
-              <h3 class="mb-4 fw-bold text-uppercase">Zaloguj się</h3>
+            <div class="card shadow-lg" style="border-radius: 1rem">
+                <div class="card-body p-5 text-center">
+                    <h3 class="mb-4 fw-bold text-uppercase">Zaloguj się</h3>
 
-              <form method="post">
-                {% csrf_token %} {% if form.errors %}
-                <div class="alert alert-danger" role="alert">
-                  Nieprawidłowy login lub hasło!
+                    <form method="post">
+                        {% csrf_token %} {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            Nieprawidłowy login lub hasło!
+                        </div>
+                    {% endif %}
+
+                        <div class="form-outline mb-4 text-start">
+                            <label class="form-label" for="id_username">Użytkownik</label>
+                            <input
+                                    type="text"
+                                    name="username"
+                                    id="id_username"
+                                    class="form-control form-control-lg"
+                                    required
+                                    autofocus
+                            />
+                        </div>
+
+                        <div class="form-outline mb-4 text-start">
+                            <label class="form-label" for="id_password">Hasło</label>
+                            <input
+                                    type="password"
+                                    name="password"
+                                    id="id_password"
+                                    class="form-control form-control-lg"
+                                    required
+                            />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Zaloguj się</button>
+
+                        <input type="hidden" name="next" value="{{ next }}"/>
+                    </form>
                 </div>
-                {% endif %}
-
-                <div class="form-outline mb-4 text-start">
-                  <label class="form-label" for="id_username">Użytkownik</label>
-                  <input
-                    type="text"
-                    name="username"
-                    id="id_username"
-                    class="form-control form-control-lg"
-                    required
-                    autofocus
-                  />
-                </div>
-
-                <div class="form-outline mb-4 text-start">
-                  <label class="form-label" for="id_password">Hasło</label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="id_password"
-                    class="form-control form-control-lg"
-                    required
-                  />
-                </div>
-
-                <button class="btn btn-primary btn-lg w-100" type="submit">
-                  WEJDŹ
-                </button>
-
-                <input type="hidden" name="next" value="{{ next }}" />
-              </form>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </body>
+</div>
+</body>
 </html>

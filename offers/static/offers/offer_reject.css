@@ -1,0 +1,110 @@
+/* Tło strony (opcjonalne, żeby wyszarzyć resztę) */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Główny kontener - Karta na środku */
+.reject-card {
+    max-width: 600px;
+    margin: 60px auto; /* Odstęp od góry i wyśrodkowanie */
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Solidny cień */
+    overflow: hidden; /* Żeby nagłówek nie wystawał poza zaokrąglenia */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Czerwony nagłówek - OSTRZEŻENIE */
+.reject-header {
+    background-color: #dc3545; /* Bootstrapowy Danger Red */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid #bd2130;
+}
+
+.reject-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Wnętrze karty */
+.reject-body {
+    padding: 30px;
+}
+
+/* Sekcja z ostrzeżeniem tekstowym */
+.warning-box {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* Stylowanie pola tekstowego */
+.reason-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical; /* Pozwala rozciągać tylko w dół */
+    transition: border-color 0.3s;
+    margin-bottom: 25px;
+}
+
+.reason-textarea:focus {
+    border-color: #dc3545;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+/* Etykieta nad polem */
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Przyciski na dole */
+.reject-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Przycisk Anuluj */
+.btn-cancel {
+    text-decoration: none;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: color 0.3s;
+}
+
+.btn-cancel:hover {
+    color: #343a40;
+}
+
+/* Przycisk Potwierdź (Główny) */
+.btn-confirm {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.btn-confirm:hover {
+    background-color: #c82333;
+}

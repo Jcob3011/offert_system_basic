@@ -30,6 +30,8 @@ class SellerAdmin(admin.ModelAdmin):
     list_display = ['name', 'nip', 'email']
 
 
+
+
 # --- KONIEC MODELI ---
 
 class OfferItemInline(admin.TabularInline):
@@ -56,7 +58,7 @@ class OfferItemInline(admin.TabularInline):
 @admin.register(Offer)
 class OfferAdmin(ImportExportModelAdmin):
     inlines = [OfferItemInline]
-    actions = ['make_pending', 'make_draft', 'make_approved']
+    actions = ['make_pending', 'make_draft', 'make_approved', 'make_consultation']
     list_display = ('offer_number', 'client', 'total_price', 'status_colored', 'pdf_button', 'created_at')
     list_display_links = ['offer_number']  # Linkujemy tylko numer, żeby nie kliknąć przypadkiem w klienta
     list_filter = ['status', 'created_at', 'client__company']  # Filtr po firmie!
@@ -117,20 +119,32 @@ class OfferAdmin(ImportExportModelAdmin):
 
     # --- ACTIONS (Maszyna Stanów) ---
 
-    @admin.action(description='Prześlij do akceptacji (-> PENDING)')
+    @admin.action(description='Prześlij do akceptacji ')
     def make_pending(self, request, queryset):
         # Możemy wysłać tylko DRAFY lub ODRZUCONE (po poprawce)
         updated = queryset.filter(status__in=[Offer.Status.DRAFT, Offer.Status.REJECTED]).update(
             status=Offer.Status.PENDING)
         self.message_user(request, f"Wysłano do akceptacji: {updated} ofert.")
 
-    @admin.action(description='Cofnij do edycji (-> DRAFT)')
+    @admin.action(description='Cofnij do edycji')
     def make_draft(self, request, queryset):
         updated = queryset.update(status=Offer.Status.DRAFT)
         self.message_user(request, f"Przywrócono do edycji: {updated} ofert.")
 
-    @admin.action(description='Zatwierdź (-> APPROVED)')
+    @admin.action(description='Zatwierdź')
     def make_approved(self, request, queryset):
         # Zatwierdzamy tylko te oczekujące
         updated = queryset.filter(status=Offer.Status.PENDING).update(status=Offer.Status.APPROVED)
         self.message_user(request, f"Zatwierdzono: {updated} ofert.")
+
+    @admin.action(description='Skieruj do konsultacji IT')
+    def make_consultation(self, request, queryset):
+
+        rows_updated = queryset.update(status=Offer.Status.IN_CONSULTATION)
+
+        if rows_updated == 1:
+            message_bit = "1 ofertę"
+        else:
+            message_bit = f"{rows_updated} ofert"
+
+        self.message_user(request, f"Skierowano {message_bit} do konsultacji z Seniorem IT.")

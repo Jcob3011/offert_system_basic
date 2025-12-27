@@ -78,29 +78,43 @@
 }
 
 /* Ważne: te nazwy muszą pasować do tego co zwraca python */
-.status-draft {
-    background-color: #6c757d;
+/* 1. KONSULTACJA (Niebieski) */
+.status-consultation {
+    background-color: #268eff; !important;
 }
 
-/* Szary */
-.status-pending {
-    background-color: #ffc107;
-    color: #333;
+/* 2. WYSŁANA (Fioletowy) */
+.status-sent {
+    background-color: #6f42c1 !important;
+    color: white !important;
 }
 
-/* Żółty (tekst ciemny dla kontrastu) */
+/* 3. ZATWIERDZONA (Zielony - jeśli Bootstrapowy nie działa) */
 .status-approved {
-    background-color: #28a745;
+    background-color: #28a745 !important;
+    color: white !important;
 }
 
-/* Zielony */
+/* 4. ODRZUCONA (Czerwony - jeśli Bootstrapowy nie działa) */
 .status-rejected {
-    background-color: #dc3545;
+    background-color: #dc3545 !important;
+    color: white !important;
 }
 
-/* Czerwony */
+/* 5. OCZEKUJE (Żółty/Pomarańczowy) */
+.status-pending {
+    background-color: #ffc107 !important;
+    color: #212529 !important; /* Ciemny tekst dla kontrastu */
+}
+
+/* 6. ROBOCZA (Szary) */
+.status-draft {
+    background-color: #6c757d !important;
+    color: white !important;
+}
 
 /* 5. GUZIKI */
+
 .btn-sm {
     display: inline-block;
     padding: 5px 10px;
@@ -121,6 +135,7 @@
 }
 
 /* Poprawa wyglądu wierszy i przycisków */
+
 .table-actions .btn {
     min-width: 32px; /* Zapewnia, że przyciski ✔ i ✘ są kwadratowe */
     display: inline-flex;

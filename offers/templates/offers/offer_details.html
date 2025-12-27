@@ -17,6 +17,16 @@
 
     <link rel="stylesheet" href="{% static 'css/offer_details.css' %}"/>
 </head>
+{% if offer.status == 'rejected' or offer.status == 'REJECTED' %}
+    <div class="alert alert-danger shadow-sm" role="alert" style="border-left: 5px solid #bd2130;">
+        <h4 class="alert-heading">⛔ Oferta Odrzucona</h4>
+        <p>Oferta wymaga poprawki. Decyzja przełożonego:</p>
+        <hr>
+        <p class="mb-0" style="font-size: 1.1rem; font-weight: bold;">
+            "{{ offer.rejection_reason|default:"Brak podanego powodu. Skontaktuj się z CEO." }}"
+        </p>
+    </div>
+{% endif %}
 <body class="bg-light">
 <nav class="navbar navbar-dark bg-dark mb-4">
     <div class="container">
