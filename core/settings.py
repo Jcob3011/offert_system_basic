@@ -8,6 +8,7 @@ IS_PYTHONANYWHERE = 'PYTHONANYWHERE_DOMAIN' in os.environ
 
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
     pass
@@ -16,11 +17,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 try:
     from dotenv import load_dotenv
+
     load_dotenv()  # Szuka pliku .env i ładuje zmienne
     print("LOG: Załadowano ustawienia z pliku .env (Lokalnie)")
 except ImportError:
     print("LOG: Brak biblioteki python-dotenv - zakładam, że to Produkcja (PythonAnywhere)")
-
 
 allowed_hosts_env = os.getenv('ALLOWED_HOSTS', '')
 if allowed_hosts_env:
@@ -31,8 +32,6 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-
 
 # Application definition
 
@@ -85,8 +84,6 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -104,7 +101,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -116,7 +112,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -136,7 +131,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -147,7 +141,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

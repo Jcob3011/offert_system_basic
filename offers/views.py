@@ -5,11 +5,12 @@ import uuid
 from django.conf import settings
 from .models import Offer, OfferItem
 from .forms import OfferForm, OfferItemFormSet
-import weasyprint
+from weasyprint import HTML, CSS
 from django.http import HttpResponse, FileResponse
 from django.template.loader import render_to_string
 from datetime import timedelta
 from django.contrib import messages
+import os
 
 
 # --- WIDOK: KAFELKI (DASHBOARD) ---
@@ -135,32 +136,46 @@ def offer_edit(request, pk):
 def offer_pdf(request, pk):
     offer = get_object_or_404(Offer, pk=pk)
 
-    if offer.external_file:
-        try:
-            return FileResponse(offer.external_file.open('rb'), content_type='application/pdf')
-        except FileNotFoundError:
-            pass  # Jeśli plik zaginął, generujemy nowy w locie
+    # --- 1. LOGIKA ŚCIEŻEK (Hybrid Pathing) ---
+    if not settings.DEBUG:
+        # --- PRODUKCJA (PythonAnywhere) ---
+        # Tu pliki są zebrane komendą collectstatic w folderze staticfiles
+        base_path = settings.STATIC_ROOT
+    else:
+        # --- LOKALNIE (Docker / Dev) ---
+        # Tu pliki leżą w folderze źródłowym aplikacji
+        # Budujemy ścieżkę: BASE_DIR / offers / static
+        base_path = os.path.join(settings.BASE_DIR, 'offers', 'static')
 
-    context = {'offer': offer}
+    # Pełna ścieżka do pliku CSS na dysku
+    css_path = os.path.join(base_path, 'offers', 'pdf_style.css')
+
+    # Logika dla Loga (obrazka)
+    # offer.seller.logo.path działa poprawnie i lokalnie (Docker) i na produkcji
+    if offer.seller.logo:
+        logo_url = 'file://' + offer.seller.logo.path
+    else:
+        logo_url = None
+
+    print(f"PDF GENERATOR: Używam CSS z: {css_path}")
+
+    context = {
+        'offer': offer,
+        'logo_url': logo_url,
+    }
     html_string = render_to_string('offers/offer_pdf.html', context)
 
-    if settings.DEBUG:
-        # SCENARIUSZ A: Lokalnie (Windows/Docker)
-        # Używamy HTTP (http://127.0.0.1:8000/static/...)
-        # Bo lokalnie serwer deweloperski serwuje pliki w locie.
-        base_url = request.build_absolute_uri()
+    html = HTML(string=html_string, base_url='')
+
+    if os.path.exists(css_path):
+        css = CSS(filename=css_path)
+        pdf_file = html.write_pdf(stylesheets=[css])
     else:
-        # SCENARIUSZ B: Produkcja (PythonAnywhere)
-
-        base_url = 'file://' + str(settings.STATIC_ROOT) + '/'
-
-    html = weasyprint.HTML(string=html_string, base_url=base_url)
-    pdf_file = html.write_pdf()
+        print(f"!!! BŁĄD: Brak pliku CSS pod ścieżką: {css_path} !!!")
+        pdf_file = html.write_pdf()
 
     response = HttpResponse(pdf_file, content_type='application/pdf')
-    safe_filename = offer.offer_number.replace('/', '_')
-    response['Content-Disposition'] = f'inline; filename="Oferta_{safe_filename}.pdf"'
-
+    response['Content-Disposition'] = f'filename="Oferta_{offer.offer_number}.pdf"'
     return response
 
 
