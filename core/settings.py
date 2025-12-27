@@ -27,7 +27,7 @@ if allowed_hosts_env:
     ALLOWED_HOSTS = allowed_hosts_env.split(',')
 else:
     # Fallback dla PythonAnywhere, jeśli zapomnimy ustawić zmienną
-    ALLOWED_HOSTS = ['jakub.pythonanywhere.com', 'localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['jakub3011.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
