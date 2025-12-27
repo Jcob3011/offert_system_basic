@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('accounts/', include('django.contrib.auth.urls')),
+    path('', offer_views.home, name='root'),
     path('home/', offer_views.home, name='home'),
     path('offers/', offer_views.offer_list, name='offer_list'),
     path('offers/create/', offer_views.offer_create, name='offer_create'),
