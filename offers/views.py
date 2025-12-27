@@ -136,42 +136,54 @@ def offer_edit(request, pk):
 def offer_pdf(request, pk):
     offer = get_object_or_404(Offer, pk=pk)
 
-    # --- 1. LOGIKA ŚCIEŻEK (Hybrid Pathing) ---
+    # --- KONFIGURACJA ŚCIEŻEK ---
+
     if not settings.DEBUG:
         # --- PRODUKCJA (PythonAnywhere) ---
-        # Tu pliki są zebrane komendą collectstatic w folderze staticfiles
-        base_path = settings.STATIC_ROOT
+        css_path = '/home/jakub3011/offert_system_basic/staticfiles/offers/pdf_style.css'
+
+        # Logo z dysku
+        if offer.seller.logo:
+            logo_url = 'file://' + offer.seller.logo.path
+        else:
+            logo_url = None
+
     else:
-        # --- LOKALNIE (Docker / Dev) ---
-        # Tu pliki leżą w folderze źródłowym aplikacji
-        # Budujemy ścieżkę: BASE_DIR / offers / static
-        base_path = os.path.join(settings.BASE_DIR, 'offers', 'static')
+        # --- LOKALNIE (Docker) ---
+        # Ścieżka do kodu źródłowego
+        css_path = os.path.join(settings.BASE_DIR, 'offers', 'static', 'offers', 'pdf_style.css')
 
-    # Pełna ścieżka do pliku CSS na dysku
-    css_path = os.path.join(base_path, 'offers', 'pdf_style.css')
+        # Logo
+        logo_url = request.build_absolute_uri(offer.seller.logo.url) if offer.seller.logo else None
 
-    # Logika dla Loga (obrazka)
-    # offer.seller.logo.path działa poprawnie i lokalnie (Docker) i na produkcji
-    if offer.seller.logo:
-        logo_url = 'file://' + offer.seller.logo.path
-    else:
-        logo_url = None
+    # --- DEBUGOWANIE ---
+    # To zobaczysz w Server Log na PA
+    print(f"--- DEBUG PDF ---", file=sys.stderr)
+    print(f"TRYB: {'PRODUKCJA' if not settings.DEBUG else 'LOKALNY'}", file=sys.stderr)
+    print(f"Używam CSS: {css_path}", file=sys.stderr)
+    print(f"Czy plik istnieje?: {os.path.exists(css_path)}", file=sys.stderr)
 
-    print(f"PDF GENERATOR: Używam CSS z: {css_path}")
-
+    # --- RENDEROWANIE ---
     context = {
         'offer': offer,
         'logo_url': logo_url,
     }
+
     html_string = render_to_string('offers/offer_pdf.html', context)
 
+    # base_url='' - nie pozwalamy WeasyPrintowi błądzić po sieci
     html = HTML(string=html_string, base_url='')
 
     if os.path.exists(css_path):
-        css = CSS(filename=css_path)
-        pdf_file = html.write_pdf(stylesheets=[css])
+        try:
+            css = CSS(filename=css_path)
+            pdf_file = html.write_pdf(stylesheets=[css])
+            print("CSS załadowany poprawnie.", file=sys.stderr)
+        except Exception as e:
+            print(f"Błąd ładowania CSS: {e}", file=sys.stderr)
+            pdf_file = html.write_pdf()
     else:
-        print(f"!!! BŁĄD: Brak pliku CSS pod ścieżką: {css_path} !!!")
+        print("!!! PLIK CSS NIE ISTNIEJE !!! Generuję bez styli.", file=sys.stderr)
         pdf_file = html.write_pdf()
 
     response = HttpResponse(pdf_file, content_type='application/pdf')
