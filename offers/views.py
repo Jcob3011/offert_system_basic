@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 import uuid
+from django.conf import settings
 from .models import Offer, OfferItem
 from .forms import OfferForm, OfferItemFormSet
 import weasyprint
@@ -138,14 +139,22 @@ def offer_pdf(request, pk):
         try:
             return FileResponse(offer.external_file.open('rb'), content_type='application/pdf')
         except FileNotFoundError:
-            pass
+            pass  # Jeśli plik zaginął, generujemy nowy w locie
 
-            # Przekazujemy ofertę do szablonu.
-    # Daty (valid_until_date) i inne rzeczy są w modelu (@property).
     context = {'offer': offer}
-
     html_string = render_to_string('offers/offer_pdf.html', context)
-    html = weasyprint.HTML(string=html_string, base_url=request.build_absolute_uri())
+
+    if settings.DEBUG:
+        # SCENARIUSZ A: Lokalnie (Windows/Docker)
+        # Używamy HTTP (http://127.0.0.1:8000/static/...)
+        # Bo lokalnie serwer deweloperski serwuje pliki w locie.
+        base_url = request.build_absolute_uri()
+    else:
+        # SCENARIUSZ B: Produkcja (PythonAnywhere)
+
+        base_url = 'file://' + str(settings.STATIC_ROOT) + '/'
+
+    html = weasyprint.HTML(string=html_string, base_url=base_url)
     pdf_file = html.write_pdf()
 
     response = HttpResponse(pdf_file, content_type='application/pdf')
