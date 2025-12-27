@@ -12,7 +12,7 @@ try:
 except ImportError:
     pass
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 try:
     from dotenv import load_dotenv
@@ -110,12 +110,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'oferty_db',              # To ustalone w docker-compose (POSTGRES_DB)
-        'USER': 'admin',                  # To ustalone w docker-compose (POSTGRES_USER)
-        'PASSWORD': 'admin1',     # To ustalone w docker-compose (POSTGRES_PASSWORD)
-        'HOST': 'db',                     # <--- To jest hostname kontenera (DNS Dockera)
-        'PORT': '5432',                   # Standardowy port PGSQL
+        # Zmieniamy silnik na SQLite (baza w pliku)
+        'ENGINE': 'django.db.backends.sqlite3',
+        # Wskazujemy, że plik ma leżeć w głównym folderze projektu
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
